@@ -11,6 +11,8 @@ data class Notemodel(
     val id : Int = 0,
     val title : String,
     val content : String,
-
-
+//    var dateTime: Long,
 )
+
+
+

@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.noteapp2.screens.AddNoteScreen
+import com.example.noteapp2.screens.EditNoteScreen
 import com.example.noteapp2.screens.NoteDetailsScreen
 import com.example.noteapp2.screens.NoteListScreen
 
@@ -25,14 +26,27 @@ fun AppNavigation(){
             AddNoteScreen(navController)
         }
 
-        composable(Routes.NoteDetailsRoute){
-            NoteDetailsScreen(navController)
+        composable("note-details/{noteId}"){
+            NoteDetailsScreen(
+                navController = navController,
+                noteId = it.arguments!!.getString("noteId")!!)
+        }
+
+        composable("edit-notes/{noteId}"){
+            EditNoteScreen(
+                navController = navController,
+                noteId= it.arguments!!.getString("noteId")!!)
         }
     }
-}
+    }
+
 
 object Routes{
     val NoteListRoute = "note-list"
     val AddNoteRoute = "add-note"
-    val NoteDetailsRoute = "note-details"
+    fun NoteDetails(noteId: String): String{
+        return "note-details/$noteId"}
+    fun EditNoteRoute(noteId: String) : String{
+        return "edit-notes/$noteId"
+    }
 }

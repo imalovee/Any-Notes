@@ -1,17 +1,23 @@
 package com.example.noteapp2.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,6 +44,7 @@ import com.example.noteapp2.models.Notemodel
 import com.example.noteapp2.viewmodel.NoteViewModel
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteListScreen(navController: NavController) {
@@ -44,11 +52,11 @@ fun NoteListScreen(navController: NavController) {
     val listOfNotes   by nViewModel.getAllNotes().observeAsState(emptyList())
     Scaffold(
         topBar = {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(4.dp) // Add a shadow to the card
-            ) {
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .shadow(4.dp) // Add a shadow to the card
+//            ) {
                 TopAppBar(title = { Text(text = "MY Note App") },
                     colors = TopAppBarDefaults.smallTopAppBarColors(
                         containerColor =MaterialTheme.colorScheme.primary,
@@ -73,20 +81,28 @@ fun NoteListScreen(navController: NavController) {
                         }
                     }
                 )
-            }},
+            },
         content = {paddingValues -> 
-            LazyColumn(modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()) {
-                items(listOfNotes){
-                    NoteItem(note = it, navController = navController)
-                }
-
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                   ,
+                contentPadding = paddingValues
+                ){
+                items(listOfNotes){note ->
+                    key(note){
+                        NoteItem(note = note, navController = navController)
+                    }
+               }
             }
+
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(Routes.AddNoteRoute) }) {
+            ExtendedFloatingActionButton(
+                onClick = { navController.navigate(Routes.AddNoteRoute) }) {
                Icon(imageVector = Icons.Default.Add, contentDescription ="null" )
+                Text(text = "Add Note")
                 
             }
         },
